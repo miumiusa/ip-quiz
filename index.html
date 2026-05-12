@@ -453,10 +453,11 @@
         <div class="payment-title">支付0.01元</div>
         <div class="payment-amount">¥0.01</div>
         <div class="qr-container">
-          <img class="qr-image" id="qrCode" src="收款码.jpg" alt="付款码">
+          <img class="qr-image" id="qrCode" src="收款码.jpg" alt="付款码" onclick="this.style.position='fixed;this.style.zIndex=9999;this.style.top=0;this.style.left=0;this.style.width=100%'" ondblclick="this.style.position='static'">
         </div>
         <div class="payment-tip">
-          请使用微信扫描上方二维码完成支付<br>
+          长按图片保存到相册<br>
+          打开微信扫一扫从相册选择<br>
           答题完成后可在结果页确认付款
         </div>
       </div>
