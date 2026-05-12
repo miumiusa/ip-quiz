@@ -453,13 +453,13 @@
         <div class="payment-title">支付0.01元</div>
         <div class="payment-amount">¥0.01</div>
         <div class="qr-container">
-          <img class="qr-image" id="qrCode" src="收款码.jpg" alt="付款码" onclick="this.style.position='fixed;this.style.zIndex=9999;this.style.top=0;this.style.left=0;this.style.width=100%'" ondblclick="this.style.position='static'">
+          <img class="qr-image" id="qrCode" src="收款码.jpg" alt="付款码">
         </div>
         <div class="payment-tip">
           长按图片保存到相册<br>
-          打开微信扫一扫从相册选择<br>
-          答题完成后可在结果页确认付款
+          打开微信扫一扫从相册选择
         </div>
+        <button class="paid-btn" onclick="confirmPayment()">我已付款</button>
       </div>
       <button class="back-btn" onclick="backToHome()">返回</button>
     </div>
@@ -490,7 +490,6 @@
         <div class="result-level" id="resultLevel"></div>
         <div class="result-score" id="resultScore"></div>
         <div class="result-comment" id="resultComment"></div>
-        <button class="paid-btn" onclick="confirmPaid()">我已付款</button>
       </div>
       
       <button class="restart-btn" onclick="restartQuiz()">重新测评</button>
@@ -627,14 +626,13 @@
     function showPayment() {
       document.getElementById('pageHome').style.display = 'none';
       document.getElementById('pagePayment').style.display = 'flex';
-      document.getElementById('qrCode').src = QR_CODE_URL;
     }
 
-    // 确认付款（结果页按钮）
-    function confirmPaid() {
-      localStorage.setItem('ip_quiz_paid', 'true');
-      document.querySelector('.page-result .paid-btn').style.display = 'none';
-      alert('感谢您的支持！');
+    // 确认付款后进入答题
+    function confirmPayment() {
+      document.getElementById('pagePayment').style.display = 'none';
+      document.getElementById('pageQuiz').style.display = 'flex';
+      showQuestion(0);
     }
 
     // 返回首页
