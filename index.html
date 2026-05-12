@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IP潜力测评</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      min-height: 700px;
+      position: relative;
+    }
+
+    /* 首页样式 */
+    .page-home {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+    }
+
+    .logo-text {
+      font-size: 36px;
+      font-weight: bold;
+      color: #1a1a2e;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .info-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      margin-bottom: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .info-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1a1a2e;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .info-content {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%);
+      color: #1a1a2e;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 16px 60px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .start-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    /* 答题页样式 */
+    .page-quiz {
+      display: none;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd700 0%, #ff9500 100%);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .question-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .question-number {
+      font-size: 14px;
+      color: #ff9500;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1a1a2e;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .option {
+      padding: 18px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .option:hover {
+      border-color: #ffd700;
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .option.selected {
+      border-color: #ffd700;
+      background: rgba(255, 215, 0, 0.1);
+      color: #ff9500;
+      font-weight: 600;
+      transform: scale(0.98);
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 16px;
+    }
+
+    .nav-btn {
+      padding: 14px 40px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-prev {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-prev:active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-prev:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* 结果页样式 */
+    .page-result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .result-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 100%;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .result-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .star {
+      font-size: 40px;
+      margin: 0 2px;
+    }
+
+    .star.gray {
+      filter: grayscale(100%);
+      opacity: 0.3;
+    }
+
+    .comment-line {
+      margin-bottom: 8px;
+    }
+
+    .comment-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .result-level {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1a1a2e;
+      margin-bottom: 16px;
+    }
+
+    .result-score {
+      font-size: 48px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+
+    .result-comment {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f8f8;
+      border-radius: 12px;
+    }
+
+    .share-btn {
+      background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 16px 50px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(7, 193, 96, 0.3);
+      transition: transform 0.2s;
+    }
+
+    .share-btn:active {
+      transform: scale(0.95);
+    }
+
+    .restart-btn {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      padding: 12px 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.2s;
+    }
+
+    .restart-btn:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* 支付页样式 */
+    .page-payment {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .payment-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 24px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .payment-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #1a1a2e;
+      margin-bottom: 20px;
+    }
+
+    .payment-amount {
+      font-size: 36px;
+      font-weight: bold;
+      color: #ff6b6b;
+      margin-bottom: 20px;
+    }
+
+    .qr-container {
+      margin: 20px 0;
+    }
+
+    .qr-image {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border: 2px solid #f0f0f0;
+      border-radius: 12px;
+    }
+
+    .payment-tip {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .paid-btn {
+      background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 40px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(7, 193, 96, 0.3);
+    }
+
+    .paid-btn:active {
+      transform: scale(0.98);
+    }
+
+    .skip-btn {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      padding: 12px 20px;
+      border: none;
+      cursor: pointer;
+      margin-top: 16px;
+      text-decoration: underline;
+    }
+
+    .back-btn {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      padding: 12px 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 首页 -->
+    <div class="page-home" id="pageHome">
+      <div class="logo">
+        <span class="logo-text">IP</span>
+      </div>
+      <h1 class="title">IP潜力测评</h1>
+      <p class="subtitle">测一测你是否具备成为IP的潜力</p>
+      
+      <div class="info-card">
+        <div class="info-title">测评说明</div>
+        <div class="info-content">
+          本测评包含20道题目，每题5分，满分100分。<br><br>
+          根据您的答案，我们将评估您在专业能力、性格特质、个人品牌、内容创作、影响力等方面的IP潜质，并给出针对性的发展建议。<br><br>
+          请根据实际情况选择最符合您的选项。
+        </div>
+      </div>
+      
+      <button class="start-btn" onclick="startQuiz()">开始测评</button>
+    </div>
+
+    <!-- 支付页 -->
+    <div class="page-payment" id="pagePayment">
+      <div class="payment-card">
+        <div class="payment-title">支付0.01元</div>
+        <div class="payment-amount">¥0.01</div>
+        <div class="qr-container">
+          <img class="qr-image" id="qrCode" src="" alt="付款码">
+        </div>
+        <div class="payment-tip">
+          请使用微信扫描上方二维码完成支付<br>
+          答题完成后可在结果页确认付款
+        </div>
+      </div>
+      <button class="back-btn" onclick="backToHome()">返回</button>
+    </div>
+
+    <!-- 答题页 -->
+    <div class="page-quiz" id="pageQuiz">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">1 / 20</div>
+      
+      <div class="question-card">
+        <div class="question-number" id="questionNumber">第 1 题</div>
+        <div class="question-text" id="questionText"></div>
+        
+        <div class="options" id="optionsContainer"></div>
+        
+        <div class="nav-buttons">
+          <button class="nav-btn nav-prev" id="prevBtn" onclick="prevQuestion()" disabled>← 上一题</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果页 -->
+    <div class="page-result" id="pageResult">
+      <div class="result-card">
+        <div class="result-icon" id="resultIcon"></div>
+        <div class="result-level" id="resultLevel"></div>
+        <div class="result-score" id="resultScore"></div>
+        <div class="result-comment" id="resultComment"></div>
+        <button class="paid-btn" onclick="confirmPaid()">我已付款</button>
+      </div>
+      
+      <button class="restart-btn" onclick="restartQuiz()">重新测评</button>
+      
+      <div class="footer">做IP 找虎哥</div>
+    </div>
+  </div>
+
+  <script>
+    // 题目数据
+    const questions = [
+      {
+        question: "您是否在某一领域拥有专业知识或技能？",
+        options: ["A：是，我很专业", "B：没有专业/擅长的技能或知识"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否曾在这个专业领域获得过奖项？",
+        options: ["A：是的，有过荣誉或认证", "B：没有"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否经常更新自己的专业知识以保持领先？",
+        options: ["A：是", "B：否"],
+        score: [5, 0]
+      },
+      {
+        question: "你是否在某个垂直领域深耕过5年及以上？",
+        options: ["A：是", "B：否"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否经常按时完成承诺的任务或项目？",
+        options: ["A：是的", "B：很少"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否是个守时的人？",
+        options: ["A：是", "B：一般"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否能在压力下保持稳定的表现？",
+        options: ["A：可以，没问题", "B：很难"],
+        score: [5, 0]
+      },
+      {
+        question: "你是否坚持做1件事情超过10年？",
+        options: ["A：有", "B：没有"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否认为自己有独特的个人风格或特点？",
+        options: ["A：有，很鲜明", "B：普通，没有特点"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否在各社交媒体上有一致的个人形象？",
+        options: ["A：是的", "B：并不是"],
+        score: [5, 0]
+      },
+      {
+        question: "你是否有个好记的微信昵称？",
+        options: ["A：有，很好记", "B：不太好记"],
+        score: [5, 0]
+      },
+      {
+        question: "你是否有明确的自我标签？",
+        options: ["A：有，能说出好几个", "B：不确定，想不出来"],
+        score: [5, 0]
+      },
+      {
+        question: "你是否喜欢分享自己的观点或经验？",
+        options: ["A：是", "B：否"],
+        score: [5, 0]
+      },
+      {
+        question: "你能否常在新媒体平台发布内容？",
+        options: ["A：是", "B：否"],
+        score: [5, 0]
+      },
+      {
+        question: "如果做内容输出，你是否有明确的规划？",
+        options: ["A：稍作整理，就有输出计划", "B：不知该输出什么内容，或不知从哪切入"],
+        score: [5, 0]
+      },
+      {
+        question: "你是否有写作习惯？",
+        options: ["A：是，写作还可以", "B：否，很难落实到文字"],
+        score: [5, 0]
+      },
+      {
+        question: "您是否拥有一定数量的忠实粉丝？",
+        options: ["A：有，30人以上", "B：很少，30人以内"],
+        score: [5, 0]
+      },
+      {
+        question: "你的某条视频/图文，阅读量超过1000？",
+        options: ["A：有", "B：没有"],
+        score: [5, 0]
+      },
+      {
+        question: "是否某个账号关注量超过1000？",
+        options: ["A：是", "B：否"],
+        score: [5, 0]
+      },
+      {
+        question: "是否能分清网红和IP的区别？",
+        options: ["A：能区分", "B：无法区分"],
+        score: [5, 0]
+      }
+    ];
+
+    // 结果数据
+    const results = [
+      { min: 0, max: 60, level: "三星潜力IP", stars: 3, comment1: "现在就【分享给好友】", comment2: "请他们测测自己的IP值吧~", comment3: "——做IP 找虎哥" },
+      { min: 61, max: 75, level: "四星潜力IP", stars: 4, comment1: "现在就【分享给好友】", comment2: "请他们测测自己的IP值吧~", comment3: "——做IP 找虎哥 不翻车" },
+      { min: 76, max: 85, level: "五星潜力IP", stars: 5, comment1: "现在就【分享给好友】", comment2: "请他们测测自己的IP值吧~", comment3: "——做IP 找虎哥 不翻车" },
+      { min: 86, max: 100, level: "六星潜力IP", stars: 6, comment1: "现在就【分享给好友】", comment2: "请他们测测自己的IP值吧~", comment3: "——做IP 找虎哥" }
+    ];
+
+    let currentQuestion = 0;
+    let answers = new Array(20).fill(-1);
+
+    // 收款码图片路径
+    const QR_CODE_URL = "收款码.jpg";
+
+    // 开始测评 - 显示支付页面
+    function startQuiz() {
+      showPayment();
+    }
+
+    // 显示支付页面（展示收款码）
+    function showPayment() {
+      document.getElementById('pageHome').style.display = 'none';
+      document.getElementById('pagePayment').style.display = 'flex';
+      document.getElementById('qrCode').src = QR_CODE_URL;
+    }
+
+    // 确认付款（结果页按钮）
+    function confirmPaid() {
+      localStorage.setItem('ip_quiz_paid', 'true');
+      document.querySelector('.page-result .paid-btn').style.display = 'none';
+      alert('感谢您的支持！');
+    }
+
+    // 返回首页
+    function backToHome() {
+      document.getElementById('pagePayment').style.display = 'none';
+      document.getElementById('pageHome').style.display = 'flex';
+    }
+
+    // 首页点击开始测评 - 显示支付页提醒
+    function startQuiz() {
+      showPayment();
+    }
+
+    // 显示题目
+    function showQuestion(index) {
+      currentQuestion = index;
+      const q = questions[index];
+      
+      document.getElementById('questionNumber').textContent = `第 ${index + 1} 题`;
+      document.getElementById('questionText').textContent = q.question;
+      document.getElementById('progressFill').style.width = `${((index + 1) / 20) * 100}%`;
+      document.getElementById('progressText').textContent = `${index + 1} / 20`;
+      
+      // 渲染选项
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+      
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('div');
+        btn.className = 'option' + (answers[index] === i ? ' selected' : '');
+        btn.textContent = opt;
+        btn.onclick = () => selectOption(i);
+        container.appendChild(btn);
+      });
+      
+      // 更新上一题按钮状态
+      document.getElementById('prevBtn').disabled = index === 0;
+    }
+
+    // 选择选项
+    function selectOption(optionIndex) {
+      answers[currentQuestion] = optionIndex;
+      
+      // 更新选中状态
+      const options = document.querySelectorAll('.option');
+      options.forEach((opt, i) => {
+        opt.classList.toggle('selected', i === optionIndex);
+      });
+      
+      // 自动跳转到下一题
+      setTimeout(() => {
+        if (currentQuestion < 19) {
+          showQuestion(currentQuestion + 1);
+        } else {
+          showResult();
+        }
+      }, 300);
+    }
+
+    // 上一题
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        showQuestion(currentQuestion - 1);
+      }
+    }
+
+    // 下一题
+    function nextQuestion() {
+      if (answers[currentQuestion] === -1) return;
+      
+      if (currentQuestion < 19) {
+        showQuestion(currentQuestion + 1);
+      } else {
+        showResult();
+      }
+    }
+
+    // 显示结果
+    function showResult() {
+      // 计算分数
+      let totalScore = 0;
+      for (let i = 0; i < 20; i++) {
+        if (answers[i] !== -1) {
+          totalScore += questions[i].score[answers[i]];
+        }
+      }
+      
+      // 找到对应结果
+      let result = results[0];
+      for (const r of results) {
+        if (totalScore >= r.min && totalScore <= r.max) {
+          result = r;
+          break;
+        }
+      }
+      
+      // 渲染结果
+      document.getElementById('pageQuiz').style.display = 'none';
+      document.getElementById('pageResult').style.display = 'flex';
+      
+      // 星星图标 - 根据等级显示对应数量的亮星
+      let starsHtml = '';
+      for (let i = 0; i < result.stars; i++) {
+        starsHtml += '<span class="star">⭐</span>';
+      }
+      // 补齐到6颗星，未获得的显示灰色
+      for (let i = result.stars; i < 6; i++) {
+        starsHtml += '<span class="star gray">⭐</span>';
+      }
+      document.getElementById('resultIcon').innerHTML = starsHtml;
+      
+      document.getElementById('resultLevel').textContent = result.level;
+      document.getElementById('resultScore').textContent = totalScore + '分';
+      
+      // 三行评语
+      document.getElementById('resultComment').innerHTML = `
+        <div class="comment-line">${result.comment1}</div>
+        <div class="comment-line">${result.comment2}</div>
+        <div class="comment-line">${result.comment3}</div>
+      `;
+    }
+
+    // 分享结果
+    function shareResult() {
+      // 复制结果到剪贴板
+      const score = document.getElementById('resultScore').textContent;
+      const level = document.getElementById('resultLevel').textContent;
+      const comment = document.getElementById('resultComment').textContent;
+      
+      const shareText = `我的IP潜力测评结果：${score} ${level}\n${comment}`;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText).then(() => {
+          alert('结果已复制到剪贴板，快去分享给好友吧！');
+        }).catch(() => {
+          alert('分享链接已复制，请手动分享');
+        });
+      } else {
+        alert('结果已生成，请截图分享');
+      }
+    }
+
+    // 重新测评
+    function restartQuiz() {
+      answers = new Array(20).fill(-1);
+      currentQuestion = 0;
+      
+      // 清除支付记录，需要重新支付
+      localStorage.removeItem('ip_quiz_paid');
+      
+      document.getElementById('pageResult').style.display = 'none';
+      document.getElementById('pageHome').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
